@@ -23,10 +23,10 @@ include __DIR__ . './_navbar.php';
         </div>
         <div class="col-md-2">
           <select class="form-control" id="fetch_option_promo">
-            <option value="">---請選擇查詢方案類型---</option>
-            <option data-promo_table="promo_user">使用者促銷</option>
-            <option data-promo_table="promo_product">產品促銷</option>
-            <option data-promo_table="promo_price">價格促銷</option>
+
+            <option value="promo_user" data-promo_table="promo_user">使用者促銷</option>
+            <option value="promo_campType" data-promo_table="promo_campType">營地類別促銷</option>
+            <option value="promo_price" data-promo_table="promo_price">價格促銷</option>
           </select>
         </div>
       </div>
@@ -60,14 +60,12 @@ include __DIR__ . './_navbar.php';
     <script>
     let ori_data = []; // data
     let ori_obj = {}; // data
-    const info_bar = document.getElementById('info_bar')
+    const info_bar = $("#info_bar");
 
 
 
-    const dis_type_arr = {
-      1: '打折',
-      2: '扣除金額'
-    };
+
+
     $(function() {
 
       function fetch_promo(promo_table) {
@@ -82,7 +80,7 @@ include __DIR__ . './_navbar.php';
             },
             text: '新增優惠方案',
             action: function() {
-              window.location = './promo_insert.php'
+              window.location = './promo_insert.php?promo_table=promo_user'
             },
 
           }, ],
@@ -107,7 +105,8 @@ include __DIR__ . './_navbar.php';
               "targets": [8],
               "data": "promo_id",
               "render": function(data, type, row, meta) {
-                return '<a href="coupon_genre_edit.php?promo_id=' + data +
+                return '<a href="promo_edit.php?promo_table=' + $("#fetch_option_promo").val() +
+                  '&promo_id=' + data +
                   '" class="edit_btn mx-1 p-1" data-promo_id=' + data +
                   '><i class="fas fa-edit"></i></a > <a href="#" class="del-btn mx-1 p-1" data-promo_id=' +
                   data + '><i class="fas fa-trash-alt"></i></a>';
@@ -169,6 +168,50 @@ include __DIR__ . './_navbar.php';
         fetch_promo(promo_table)
 
       })
+
+      $("#promo_table tbody").on("click", ".del-btn", function() {
+        let del_btn = $(this)
+        // console.log(del_btn)
+        $.confirm.show({
+          "message": "確認刪除此筆優惠方案",
+          "yesText": "確認",
+          "noText": "取消",
+          "yes": function() {
+            let promo_table = $("#fetch_option_promo").val();
+            let promo_id = del_btn.data('promo_id');
+            console.log(promo_table)
+            console.log(del_btn)
+            const form = new FormData();
+            form.append('promo_table', promo_table)
+            form.append("promo_id", promo_id);
+            fetch('promo_delete_api.php', {
+              method: "POST",
+              body: form
+            }).then(response => {
+              return response.json()
+            }).then(result => {
+              console.log(result);
+
+              info_bar.css("display", "block")
+              if (result['success']) {
+                info_bar.attr('class', 'alert alert-info').text('刪除成功');
+              } else {
+                info_bar.attr('class', 'alert alert-danger').text(result.errorMsg);
+              }
+              setTimeout(function() {
+                info_bar.css("display", "none")
+              }, 3000)
+
+              $('#promo_table').DataTable().destroy();
+              fetch_promo()
+              $("#select_all").prop('checked', false)
+            });
+          },
+          "no": function() {
+            return false
+          },
+        })
+      });
     })
     </script>
     <?php include __DIR__ . './_footer.php'?>
