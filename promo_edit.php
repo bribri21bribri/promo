@@ -2,7 +2,7 @@
 require __DIR__ . '/_connectDB.php';
 
 $promo_id = isset($_GET['promo_id']) ? intval($_GET['promo_id']) : 0;
-$promo_table = $_GET['promo_table'];
+$promo_table = htmlentities($_GET['promo_table']);
 $sql = "SELECT * FROM $promo_table WHERE promo_id=$promo_id";
 
 $stmt = $pdo->query($sql);
@@ -59,26 +59,8 @@ include __DIR__ . './_navbar.php';
         </div>
         <form method="POST" name="promo_form" onsubmit="return sendForm()">
 
-          <!-- <div class="form-group justify-content-center row">
-            <label class="col-2 text-right"><span class="asterisk"> *</span>優惠方案類型</label>
-            <div class="col-6">
-              <select class="form-control" name="promo_table" id="promo_table">
-                <option value="promo_user" <?php if (isset($promo_table)) {
-    echo $promo_table == "promo_user" ? 'selected' : "";
-}
-?>>使用者促銷</option>
-                <option value="promo_campType" <?php if (isset($promo_table)) {
-    echo $promo_table == "promo_campType" ? 'selected' : "";
-}
-?>>營地分類折扣</option>
-                <option value="promo_price" <?php if (isset($promo_table)) {
-    echo $promo_table == "promo_price" ? 'selected' : "";
-}
-?>>滿額折扣</option>
-              </select>
-              <small class="form-text text-muted"></small>
-            </div>
-          </div> -->
+          <input type="hidden" class="form-control" name="promo_table" value="<?=$promo_table?>">
+          <input type="hidden" class="form-control" name="promo_id" value="<?=$promo_id?>">
 
           <div class="form-group justify-content-center row">
             <label class="col-2 text-right"><span class="asterisk"> *</span>優惠方案名稱</label>
@@ -275,7 +257,7 @@ include __DIR__ . './_navbar.php';
     //     return false;
     // }
     function sendForm() {
-      let form = new FormData(document.update_form);
+      let form = new FormData(document.promo_form);
 
       fetch('promo_edit_api.php', {
           method: 'POST',
@@ -297,7 +279,7 @@ include __DIR__ . './_navbar.php';
           }
           submit_btn.style.display = "";
           setTimeout(function() {
-            info_bar.css('display', 'none')
+            info_bar.style.display = 'none'
           }, 3000);
         });
       return false;
