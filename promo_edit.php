@@ -132,9 +132,12 @@ include __DIR__ . './_navbar.php';
 
           <div class="form-group justify-content-center row">
             <label class="col-2 text-right"><span class="asterisk"> *</span>折扣數值</label>
-            <div class="col-6">
-              <input type="text" class="form-control" name="discount_unit" id="discount_unit" placeholder="輸入折扣數值"
-                value="<?=$row['discount_unit']?>">
+            <div class="col-6 input-group">
+              <input type="text" class="form-control" name="discount_unit" id="discount_unit"
+                placeholder="輸入折扣數值。例:9折、75折" value="<?=$row['discount_unit']?>">
+              <div class="input-group-append">
+                <span class="input-group-text" id="discount_unit_suffix">折</span>
+              </div>
             </div>
           </div>
 
@@ -177,6 +180,19 @@ include __DIR__ . './_navbar.php';
     const info_bar = document.querySelector('#info_bar');
     const submit_btn = document.querySelector('#submit_btn');
 
+    $(function() {
+      $('#discount_type').on('click blur', function() {
+        let discount_type = $(this).val()
+        if (discount_type == 'percentage') {
+          $('#discount_unit').attr('placeholder', '輸入折扣數值。例:9折、75折')
+          $('#discount_unit_suffix').text('折');
+        } else if (discount_type == 'currency') {
+          $('#discount_unit').attr('placeholder', '輸入折抵金額。例:100元')
+          $('#discount_unit_suffix').text('元');
+
+        }
+      })
+    });
     // const fields = [
     //     'name',
     //     'email',

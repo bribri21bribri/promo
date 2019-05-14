@@ -34,9 +34,9 @@ include __DIR__ . './_navbar.php';
         <div class="">
           <select class="form-control" id="fetch_option">
             <option class="dropdown-item">列出所有紀錄</option>
-            <option class="dropdown-item" data-sql="WHERE `promo_type`='promo_user'">列出會員優惠營地</option>
-            <option class="dropdown-item" data-sql="WHERE `promo_type`='promo_campType'">列出營地分類優惠</option>
-            <option class="dropdown-item" data-sql="WHERE `promo_type`='promo_price'">列出滿額優惠營地</option>
+            <option class="dropdown-item" data-sql="WHERE promo_type ='promo_user'">列出會員優惠營地</option>
+            <option class="dropdown-item" data-sql="WHERE promo_type ='promo_campType'">列出營地分類優惠</option>
+            <option class="dropdown-item" data-sql="WHERE promo_type ='promo_price'">列出滿額優惠營地</option>
           </select>
         </div>
       </div>
@@ -51,7 +51,7 @@ include __DIR__ . './_navbar.php';
               <th scope="col">優惠類別</th>
               <th scope="col">加入日期</th>
               <th scope="col">有效狀態</th>
-              <th scope="col">營地編號</th>
+              <th scope="col">營地名稱</th>
               <th scope="col">操作</th>
               <th scope="col"><input type="checkbox" id="checkAll"></th>
             </tr>
@@ -70,6 +70,9 @@ include __DIR__ . './_navbar.php';
 
       function fetch_promo_apply(sql) {
         $('#promo_apply_table').DataTable({
+          language: {
+            searchPlaceholder: "輸入營地名稱"
+          },
           drawCallback: function() {
             let checkCount = $("tbody .checkbox_manipulation :checkbox").length
             let checkedCount = $("tbody .checkbox_manipulation :checked").length
@@ -129,17 +132,7 @@ include __DIR__ . './_navbar.php';
                 window.location = './promo_apply_insert.php'
               },
             },
-            {
-              className: 'btn btn-info',
-              text: '多筆操作',
-              action: function(e, dt, node, config) {
 
-              },
-              attr: {
-                'data-toggle': 'modal',
-                'data-target': '#multi_switch_modal'
-              }
-            },
           ],
           "processing": true,
           "serverSide": true,
@@ -203,7 +196,7 @@ include __DIR__ . './_navbar.php';
               }
             },
             {
-              "data": "camp_id",
+              "data": "camp_name",
               "className": "text-truncate"
             },
 

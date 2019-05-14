@@ -1,6 +1,5 @@
 <?php
 include __DIR__ . '/_connectDB.php';
-include __DIR__ . '/_generate_code.php';
 header('Content-Type: application/json');
 
 $result = [

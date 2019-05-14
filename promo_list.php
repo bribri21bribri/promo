@@ -70,6 +70,9 @@ include __DIR__ . './_navbar.php';
 
       function fetch_promo(promo_table) {
         $('#promo_table').DataTable({
+          language: {
+            searchPlaceholder: "輸入方案名稱"
+          },
 
           dom: 'lf<"#pagi-wrap.d-flex"<"mr-auto"B>p>t<"mt-3">',
 
@@ -122,19 +125,44 @@ include __DIR__ . './_navbar.php';
             {
               "data": "requirement",
               "render": function(data) {
+                let fetch_option_promo = $('#fetch_option_promo').val()
                 let display = ''
-                if (data == '1') {
-                  display = "露營新手";
-                } else if (data == '2') {
-                  display = "業餘露營家"
-                } else if (data == '3') {
-                  display = "露營達人"
+
+                switch (fetch_option_promo) {
+                  case 'promo_user':
+                    if (data == '1') {
+                      display = "露營新手";
+                    } else if (data == '2') {
+                      display = "業餘露營家"
+                    } else if (data == '3') {
+                      display = "露營達人"
+                    }
+                    break
+                  case 'promo_campType':
+                    display = data
+                    break
+                  case 'promo_price':
+                    display = "訂購滿" + data + "元"
+                    break
                 }
+
+
+
+
                 return display;
               }
             },
             {
-              "data": "discount_unit"
+              "data": "discount_unit",
+              "render": function(data, type, row, meta) {
+                let display = ''
+                if (row.discount_type == 'percentage') {
+                  display = data + '折'
+                } else if (row.discount_type == 'currency') {
+                  display = data + '元'
+                }
+                return display
+              }
             },
             {
               "data": "discount_type",

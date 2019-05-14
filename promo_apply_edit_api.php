@@ -11,9 +11,10 @@ $result = [
 
 ];
 
-if (isset($_POST['coupon_record_id'])) {
-    $gain_record_id = htmlentities($_POST['coupon_record_id']);
-    $coupon_valid = $_POST['coupon_valid'];
+if (isset($_POST['promo_apply_id'])) {
+    $promo_apply_id = htmlentities($_POST['promo_apply_id']);
+    $promo_type = $_POST['promo_type'];
+    $apply_valid = $_POST['apply_valid'];
     $result['post'] = $_POST; // 做 echo 檢查
 
     // if (empty($coupon_name) or empty($discount_unit) or empty($discount_type) or empty($avaliable_start) or empty($avaliable_end) or empty($coupon_expire) or empty($camp_id) or empty($discription)) {
@@ -24,16 +25,18 @@ if (isset($_POST['coupon_record_id'])) {
 
     // TODO: 檢查
 
-    $sql = "UPDATE `coupon_gain` SET
-              `coupon_valid`=?
-              WHERE  `gain_record_id`=?";
+    $sql = "UPDATE `promo_apply` SET
+              `promo_type`=?,
+              `apply_valid`=?
+              WHERE  `promo_apply_id`=?";
 
     try {
         $stmt = $pdo->prepare($sql);
 
         $stmt->execute([
-            $coupon_valid,
-            $gain_record_id,
+            $promo_type,
+            $apply_valid,
+            $promo_apply_id,
         ]);
 
         if ($stmt->rowCount() == 1) {
@@ -42,7 +45,7 @@ if (isset($_POST['coupon_record_id'])) {
             $result['errorMsg'] = '';
         } else {
             $result['errorCode'] = 402;
-            $result['errorMsg'] = '修改錯誤';
+            $result['errorMsg'] = '修改未修改';
         }
     } catch (PDOException $ex) {
         $result['errorCode'] = 403;

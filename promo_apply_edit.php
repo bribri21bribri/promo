@@ -24,7 +24,7 @@ try {
 }
 
 $promo_apply_id = isset($_GET['promo_apply_id']) ? intval($_GET['promo_apply_id']) : 0;
-$sql = "SELECT * FROM promo_apply WHERE promo_apply_id=$promo_apply_id";
+$sql = "SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_apply_id=$promo_apply_id";
 
 $stmt = $pdo->query($sql);
 
@@ -59,11 +59,11 @@ include __DIR__ . './_navbar.php';
           </div>
         </div>
         <form method="POST" name="promo_apply_insert_form" onsubmit="return sendForm()">
-
+          <input type="hidden" class="form-control" readonly name="promo_apply_id" value="<?=$row['promo_apply_id']?>">
           <div class="form-group justify-content-center row">
             <label class="col-2 text-right">營地</label>
             <div class="col-6">
-              <input type="text" class="form-control" readonly value="<?=$row['camp_id']?>">
+              <input type="text" class="form-control" readonly value="<?=$row['camp_name']?>">
             </div>
           </div>
 
@@ -109,7 +109,7 @@ include __DIR__ . './_navbar.php';
       const form = new FormData(promo_apply_insert_form);
       console.log(form)
       $('#submit_btn').attr('disabled', true);
-      fetch('promo_apply_insert_api.php', {
+      fetch('promo_apply_edit_api.php', {
           method: 'POST',
           body: form
         })
@@ -122,7 +122,7 @@ include __DIR__ . './_navbar.php';
 
           if (obj.success) {
             info_bar.className = 'alert alert-success';
-            info_bar.innerHTML = '資料新增成功';
+            info_bar.innerHTML = '資料修改成功';
           } else {
             info_bar.className = 'alert alert-danger';
             info_bar.innerHTML = obj.errorMsg;

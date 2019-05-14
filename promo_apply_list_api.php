@@ -18,28 +18,28 @@ $result = [
     'total_row' => 0,
 ];
 $result['post'] = $_POST;
-$sql = "SELECT * FROM promo_apply ";
+$sql = "SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id ";
 if (isset($_POST["promo_type_condition"])) {
     $result['recordsFiltered'] = get_all_promo_apply($pdo, $_POST["promo_type_condition"]);
     $sql .= $_POST["promo_type_condition"] . ' ' . 'AND';
 } else {
     $result['recordsFiltered'] = get_all_promo_apply($pdo);
-    $sql .= 'WHERE';
+    $sql .= ' WHERE';
 }
 $result['sql'] = $sql;
 
 if (isset($_POST["search"]["value"])) {
-    $sql .= '(camp_id LIKE "%' . $_POST["search"]["value"] . '%" )';
+    $sql .= ' (p.camp_name LIKE "%' . $_POST["search"]["value"] . '%" )';
 }
 
-if (isset($_POST['data']["order"])) {
+if (isset($_POST["order"])) {
     $order_by = $_POST['order']['0']['column'] + 1;
-    $sql .= 'ORDER BY ' . $order_by . ' ' . $_POST['order']['0']['dir'] . ' ';
+    $sql .= ' ORDER BY ' . $order_by . ' ' . $_POST['order']['0']['dir'] . ' ';
 } else {
-    $sql .= 'ORDER BY promo_apply_id ASC ';
+    $sql .= ' ORDER BY promo_apply_id ASC ';
 }
 if ($_POST["length"] != -1) {
-    $sql .= 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+    $sql .= ' LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 }
 $stmt = $pdo->prepare($sql);
 $stmt->execute();

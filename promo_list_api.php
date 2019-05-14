@@ -27,12 +27,11 @@ if (isset($_POST["promo_table"])) {
 
 if (isset($_POST["search"]["value"])) {
 
-    $sql .= 'WHERE (promo_id LIKE "%' . $_POST["search"]["value"] . '%" ';
+    $sql .= 'WHERE (promo_name LIKE "%' . $_POST["search"]["value"] . '%" )';
 
-    $sql .= 'OR promo_name LIKE "%' . $_POST["search"]["value"] . '%" )';
 }
 
-if (isset($_POST['data']["order"])) {
+if (isset($_POST["order"])) {
     $order_by = $_POST['order']['0']['column'] + 1;
     $sql .= 'ORDER BY ' . $order_by . ' ' . $_POST['order']['0']['dir'] . ' ';
 } else {
