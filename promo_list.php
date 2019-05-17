@@ -45,7 +45,7 @@ include __DIR__ . './_navbar.php';
                 <th scope="col">結束時間</th>
                 <th scope="col">方案描述</th>
                 <th scope="col">操作</th>
-                <th scope="col"><input type="checkbox" id="select_all"></th>
+                <!-- <th scope="col"><input type="checkbox" id="select_all"></th> -->
               </tr>
             </thead>
             <tbody id="promo_output">
@@ -97,13 +97,14 @@ include __DIR__ . './_navbar.php';
               promo_table: promo_table
             }
           },
-          "columnDefs": [{
-              "targets": [9],
-              "data": "promo_id",
-              "render": function(data, type, row, meta) {
-                return "<input data-promo_id=" + data + " type='checkbox'>";
-              }
-            },
+          "columnDefs": [
+            // {
+            //   "targets": [9],
+            //   "data": "promo_id",
+            //   "render": function(data, type, row, meta) {
+            //     return "<input data-promo_id=" + data + " type='checkbox'>";
+            //   }
+            // },
             {
               "targets": [8],
               "data": "promo_id",

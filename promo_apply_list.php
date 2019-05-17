@@ -93,33 +93,7 @@ include __DIR__ . './_navbar.php';
 
 
 
-            // $('.switch').checkToggler({
 
-            //   labelOn: "啟用",
-            //   labelOff: "關閉"
-
-            // }).on('change', function() {
-            //   let coupon_record_id = $(this).data('coupon_record_id')
-            //   let coupon_valid = 0
-            //   if ($(this).prop('checked')) {
-            //     coupon_valid = 1
-            //   } else {
-            //     coupon_valid = 2
-            //   }
-            //   // console.log(coupon_valid)
-            //   const formData = new FormData()
-            //   formData.append('coupon_record_id', coupon_record_id)
-            //   formData.append('coupon_valid', coupon_valid)
-
-            //   fetch('coupon_gain_edit_api.php', {
-            //     method: 'POST',
-            //     body: formData
-            //   }).then(obj => obj.json()).then(result => {
-            //     // console.log(result)
-            //     $('#coupon_table').DataTable().destroy()
-            //     fetch_coupon()
-            //   })
-            // });
           },
           dom: 'lf<"#pagi-wrap.d-flex"<"mr-auto"B>p>t<"mt-3">',
           buttons: [{
@@ -131,6 +105,58 @@ include __DIR__ . './_navbar.php';
               action: function() {
                 window.location = './promo_apply_insert.php'
               },
+            },
+            {
+              className: 'btn btn-danger ',
+              attr: {
+                id: 'promo_apply_group_del_btn'
+              },
+              text: '優惠活動參加紀錄多筆刪除',
+              action: function() {
+                let form = new FormData();
+                let delete_apply = [];
+                $('#promo_apply_table tbody :checked').each(function() {
+                  delete_apply.push($(this).data('promo_apply_id'))
+                });
+                $.confirm.show({
+                  "message": "確認刪除所選取紀錄",
+                  "yesText": "確認",
+                  "noText": "取消",
+                  "yes": function() {
+                    info_bar.css('display', 'block');
+                    if (delete_apply.length < 1) {
+                      info_bar.attr('class', 'alert alert-danger');
+                      info_bar.html("未選擇資料");
+                      setTimeout(() => {
+                        info_bar.css('display', 'none')
+                      }, 3000);
+                      return false;
+
+                    } else {
+                      let delete_apply_str = JSON.stringify(delete_apply);
+                      form.append('delete_applys', delete_apply_str);
+                      fetch('group_delete_apply_api.php', {
+                          method: 'POST',
+                          body: form
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                          $('#promo_apply_table').DataTable().destroy();
+                          fetch_promo_apply(sql);
+                          info_bar.attr('class', 'alert alert-success');
+                          info_bar.html("刪除成功");
+                          setTimeout(function() {
+                            info_bar.css('display', 'none')
+                          }, 3000);
+                          $('#promo_apply_table').DataTable().destroy();
+                          fetch_promo_apply()
+                          $("#select_all").prop('checked', false)
+                        })
+                    }
+                  }
+                })
+
+              }
             },
 
           ],
@@ -212,10 +238,6 @@ include __DIR__ . './_navbar.php';
 
       })
 
-      // $('#multi_switch').checkToggler({
-      //   labelOn: "啟用",
-      //   labelOff: "關閉"
-      // })
 
 
       const info_bar = $("#info_bar");
@@ -261,42 +283,6 @@ include __DIR__ . './_navbar.php';
           },
         })
       });
-      // function group_del(e, dt, node, config) {
-      //   let form = new FormData();
-      //   let delete_coupons = [];
-      //   $('#coupon_table tbody :checked').each(function() {
-      //     delete_coupons.push($(this).data('coupon_id'))
-      //   });
-      //   if (confirm('確認刪除資料')) {
-      //     info_bar.css('display', 'block');
-      //     if (delete_coupons.length < 1) {
-      //       info_bar.attr('class', 'alert alert-danger');
-      //       info_bar.html("未選擇資料");
-      //       setTimeout(function() {
-      //         info_bar.css('display', 'none')
-      //       }, 3000);
-      //       return false;
-      //     } else {
-      //       let delete_coupons_str = JSON.stringify(delete_coupons);
-      //       form.append('delete_coupons', delete_coupons_str);
-      //       fetch('_group_delete_api.php', {
-      //           method: 'POST',
-      //           body: form
-      //         })
-      //         .then(response => response.json())
-      //         .then(data => {
-      //           console.log(data);
-      //           $('#coupon_table').DataTable().destroy();
-      //           fetch_coupon(sql);
-      //           info_bar.attr('class', 'alert alert-success');
-      //           info_bar.html("刪除成功");
-      //           setTimeout(function() {
-      //             info_bar.css('display', 'none')
-      //           }, 3000);
-      //         })
-      //     }
-      //   }
-      // }
     });
     </script>
     <?php include __DIR__ . './_footer.php'?>
